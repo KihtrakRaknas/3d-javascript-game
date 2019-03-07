@@ -51,7 +51,7 @@ let accelerometer = new Accelerometer({frequency: 60});
 var accelX = 0;
 var accelY = 0;
 accelerometer.addEventListener('reading', e => {
-	accelX = accelerometer.x/100
+	accelX = -accelerometer.x/100
 	accelY = accelerometer.y/100
   console.log("Acceleration along the X-axis " + accelerometer.x);
   console.log("Acceleration along the Y-axis " + accelerometer.y);
@@ -64,7 +64,7 @@ window.addEventListener('touchstart', function() {
 });
 
 window.addEventListener('touchend', function() {
-	keys[32] = false;
+	//keys[32] = false;
 });
 
 function updateKeys(){
