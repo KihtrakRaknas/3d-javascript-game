@@ -1,0 +1,225 @@
+<html>
+	<head>
+		<title>3D JS game</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+		<style>
+			body { margin: 0; }
+			canvas { width: 100%; height: 100% }
+		</style>
+		<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<div id = "gameOver" class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLongTitle">GAME OVER</h5>
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close" title="refresh to play again">
+								<span aria-hidden="true">&times;</span>
+							</button>
+						</div>
+						<div id = "points" class="modal-body">
+							YOU SCORED POINTS!!!
+						</div>
+						<div class="modal-footer">
+								<a type="button" class="btn btn-secondary" href="../index.html">Instructions</a>
+							<button type="button" class="btn btn-primary" onclick="document.location.reload();">Play Again!</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/102/three.min.js"></script>
+		<script src="OrbitControls.js"></script>
+		<script>
+
+			var velXt=0;
+			var velYt=0;
+			var velX=0;
+			var velY=0;
+			var bullets = [];
+
+			var keys = {};
+window.onkeyup = function(e) { keys[e.keyCode] = false; updateKeys()}
+window.onkeydown = function(e) { keys[e.keyCode] = true; updateKeys()}
+var cooldown=0;
+function updateKeys(){
+	if(keys[38])
+					velYt = -.1;
+				else 	if(keys[40])
+					velYt = .1;
+				else
+					velYt = 0;
+
+					if(keys[39])
+					velXt = .1;
+				else 	if(keys[37])
+					velXt = -.1;
+				else
+					velXt = 0;
+					if((keys[32]&&cooldown<0)||nocool>0){
+						var bullmaterial = new THREE.MeshBasicMaterial( { color: 0xff0000,} );
+						var circle = new THREE.SphereGeometry( .3, 32, 32 );
+						var bullet = new THREE.Mesh( circle, bullmaterial );
+						bullet.position.z = cube.position.z
+						bullet.position.y = cube.position.y
+						bullet.position.x = cube.position.x
+						scene.add( bullet );
+						bullets.push(bullet);
+						collidableMeshList.push(bullet);
+						cooldown = 30;
+					}
+					var vector = camera.getWorldDirection();
+    			theta = Math.atan2(vector.x,vector.z);
+					var axis = new THREE.Vector3( 0, 1, 0 );
+
+					var newDir = new THREE.Vector3( velXt, 0, velYt );
+					newDir.applyAxisAngle( axis, theta );
+					velX= -newDir.x
+					velY= -newDir.z
+};
+
+      var collidableMeshList = []
+			var scene = new THREE.Scene();
+			var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+			var controls = new THREE.OrbitControls( camera );
+			controls.autoRotate = true;
+			controls.enableKeys = false;
+
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+			var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+			var material = new THREE.MeshBasicMaterial( { color: 0x00ff00} );
+			var cube = new THREE.Mesh( geometry, material );
+      cube.position.x = 0;
+			cube.position.y = -4.5;
+			scene.add( cube );
+
+
+			var game = new THREE.BoxGeometry( 10, 10, 10 );
+			var geo = new THREE.EdgesGeometry( game ); // or WireframeGeometry( geometry )
+
+			var mat = new THREE.LineBasicMaterial( { color: 0xffffff, linewidth: 2 } );
+
+			var wireframe = new THREE.LineSegments( geo, mat );
+
+			scene.add( wireframe );
+			
+
+
+			camera.position.z = 9;
+			camera.position.y = 4;
+			camera.rotation.x = -30 * Math.PI / 180
+
+      /*var cube3 = new THREE.Mesh( geometry, material );
+      scene.add( cube3 );
+      collidableMeshList.push(cube3);*/
+
+			var score = 0;
+			function gameOver(){
+				$('#gameOver').modal('show')
+				cancelAnimationFrame( anim );
+				document.getElementById("points").innerText = "GAME OVER\nYou scored: "+score+" points!";
+			}
+
+var nocool = 0;
+
+			var rate = 50;
+			var enimTime = 0;
+			var enemies = [];
+			var enemiesLoop = setInterval(()=>{
+				enimTime++
+				if(enimTime>rate){
+					enimTime = 0;
+					var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+					colorE = 0x0000ff
+					if(Math.floor(Math.random()*10)==0){
+						colorE = 0x00ff00
+					}
+					var material = new THREE.MeshBasicMaterial( { color: colorE,transparent: true, opacity: 0.5} );
+					var enemey = new THREE.Mesh( geometry, material );
+					enemey.position.y = 5;
+					enemey.position.x = Math.floor(Math.random()*9-4.5);
+					enemey.position.z = Math.floor(Math.random()*9-4.5);
+					scene.add( enemey );
+					enemies.push(enemey);
+					console.log(enemey);
+					//collidableMeshList.push(enemey);
+				}
+			},100)
+			var anim
+			var animate = function () {
+				if(nocool>0){
+					nocool--;
+				}
+				cooldown--;
+				anim = requestAnimationFrame( animate );
+				if(Math.abs(cube.position.x + velX)<4.5)
+					cube.position.x += velX;
+				if(Math.abs(cube.position.z + velY)<4.5)
+					cube.position.z += velY;
+				controls.update();
+				updateKeys()
+
+				for(var i =bullets.length-1; i>-1;i--){
+					bullets[i].position.y += .2
+					if(bullets[i].position.y>5){
+						scene.remove(bullets[i]);
+						bullets.splice(i,1);
+						collidableMeshList.splice(0,1);
+					}
+						
+				}
+
+				for(var i =enemies.length-1; i>-1;i--){
+					enemies[i].position.y -= .02
+					if(enemies[i].position.y<-4.5){
+						scene.remove(enemies[i]);
+						enemies.splice(i,1);
+						if(enemies[i].material.color.b ==1)
+							gameOver();
+					}
+						
+					var del = true;
+					var originPoint = enemies[i].position.clone();
+					for (var vertexIndex = 0; vertexIndex < cube.geometry.vertices.length; vertexIndex++)
+					{
+						var localVertex = cube.geometry.vertices[vertexIndex].clone();
+						var globalVertex = localVertex.applyMatrix4( cube.matrix );
+						var directionVector = globalVertex.sub( cube.position );
+
+						var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+						var collisionResults = ray.intersectObjects( collidableMeshList );
+						if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() && del){
+
+							if(enemies[i].material.color.g ==1){
+								nocool = 1000;
+							}
+
+
+							del=false
+							scene.remove(enemies[i]);
+							enemies.splice(i,1);
+							score++;
+							if(rate>1)
+							rate--;
+
+
+
+						}
+					}
+				}
+
+				renderer.render( scene, camera );
+
+
+			};
+
+			animate();
+		</script>
+	</body>
+</html>
