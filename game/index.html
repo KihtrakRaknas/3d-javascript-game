@@ -50,11 +50,15 @@ var cooldown=0;
 
 var accelX = 0;
 var accelY = 0;
+var notOneTime = false;
 window.ondevicemotion = function(event) {
 	accelX = -event.accelerationIncludingGravity.x/50;
 	accelY = event.accelerationIncludingGravity.y/50;
 	//var accelerationZ = event.accelerationIncludingGravity.z;
+	console.log("TEST")
+	if(notOneTime)
 	keys[32] = true;
+	notOneTime = true;
 }
 /*let accelerometer = new Accelerometer({frequency: 60});
 
