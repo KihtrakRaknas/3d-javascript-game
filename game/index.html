@@ -55,6 +55,10 @@ var notOneTime = false;
 window.ondevicemotion = function(event) {
 	accelX = -event.accelerationIncludingGravity.x/50;
 	accelY = event.accelerationIncludingGravity.y/50;
+	if(/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream){
+		accelX*=-1;
+		accelY*=-1;
+	}
 	//var accelerationZ = event.accelerationIncludingGravity.z;
 	console.log("TEST")
 	if(notOneTime)
