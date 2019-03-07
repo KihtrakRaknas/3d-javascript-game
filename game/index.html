@@ -51,15 +51,15 @@ var cooldown=0;
 var accelX = 0;
 var accelY = 0;
 window.ondevicemotion = function(event) {
-	accelX = event.accelerationIncludingGravity.x;
-	accelY = event.accelerationIncludingGravity.y;
+	accelX = -event.accelerationIncludingGravity.x/50;
+	accelY = event.accelerationIncludingGravity.y/50;
 	//var accelerationZ = event.accelerationIncludingGravity.z;
 }
 /*let accelerometer = new Accelerometer({frequency: 60});
 
 accelerometer.addEventListener('reading', e => {
 	accelX = -accelerometer.x/50
-	accelY = accelerometer.y/50
+	accelY = accelerometer.y
   console.log("Acceleration along the X-axis " + accelerometer.x);
   console.log("Acceleration along the Y-axis " + accelerometer.y);
   console.log("Acceleration along the Z-axis " + accelerometer.z);
