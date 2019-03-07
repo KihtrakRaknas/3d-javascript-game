@@ -46,7 +46,7 @@ window.onkeyup = function(e) { keys[e.keyCode] = false; updateKeys()}
 window.onkeydown = function(e) { keys[e.keyCode] = true; updateKeys()}
 var cooldown=0;
 
-let accelerometer = new Accelerometer({frequency: 60});
+
 
 var accelX = 0;
 var accelY = 0;
@@ -55,7 +55,9 @@ window.ondevicemotion = function(event) {
 	accelY = event.accelerationIncludingGravity.y;
 	//var accelerationZ = event.accelerationIncludingGravity.z;
 }
-/*accelerometer.addEventListener('reading', e => {
+/*let accelerometer = new Accelerometer({frequency: 60});
+
+accelerometer.addEventListener('reading', e => {
 	accelX = -accelerometer.x/50
 	accelY = accelerometer.y/50
   console.log("Acceleration along the X-axis " + accelerometer.x);
