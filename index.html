@@ -54,7 +54,7 @@
 
     <p style="font-size:2vw;">Your goal is to shoot the falling <span class="blue">Blue</span> cubes before they touch the bottom</p>
 
-    <p style="font-size:2vw;">You can shoot by <span id="hide2">pushing the </span><em id="spaceKey">space key</em></p>
+    <p style="font-size:2vw;" id="shoot">You can shoot by pushing the<em id="spaceKey">space key</em></p>
 
     <p style="font-size:2vw;">Occasionally, a <span class="green">Green</span> cube will fall, shooting this cube is optional, but doing so will grant you a temporary laser beam (which is kinda OP)</p>
 
@@ -77,9 +77,8 @@
                 document.getElementById("also").style.display= "none";
                 document.getElementById("arrowKeys").innerText = "tilt controls"
                 document.getElementById("hide").style.display= "none";
-                document.getElementById("hide2").style.display= "none";
                 document.getElementById("hide3").style.display= "none";
-                document.getElementById("spaceKey").innerText = "tapping the screen"
+                document.getElementById("shoot").innerText = "You will automatically shoot bullets"
             }
                 </script>
 
